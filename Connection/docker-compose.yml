@@ -1,0 +1,15 @@
+version: '3.3'
+
+services:
+  AV_BD:
+    image: mcr.microsoft.com/mssql/server
+    environment: 
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=avChallenge2021
+    ports: 
+      - '14333:1433'
+    volumes:
+      - av_bd_data:/var/opt/mssql
+volumes:
+  av_bd_data:
+    external: true
