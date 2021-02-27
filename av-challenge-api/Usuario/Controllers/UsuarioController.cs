@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using av_challenge_api.Models;
 using av_challenge_api.Usuario.Services;
 using Connection;
 using Connection.Entities;
-using av_challenge_api.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -93,8 +91,40 @@ namespace av_challenge_api.Usuario.Controllers
         }
 
         // POST api/<UsuarioController>
+        [HttpPost]
+        public ActionResult<UsuarioResponse> Post([FromBody] UsuarioRequest.UsuarioCreate createUsuario)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            IResponse<UsuarioEntity> respuesta = new UsuarioResponse();
+
+            try
+            {
+
+                UsuarioEntity usuario = _usuarioService.Create(createUsuario);
+                respuesta.Resultado = "S";
+                respuesta.Datos.Add(usuario);
+
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Resultado = "E";
+                respuesta.Mensaje = ex.Message.ToString();
+
+            }
+
+            return Ok(respuesta);
+
+        }
+
         [HttpPost("Login")]
-        public ActionResult<UsuarioResponse> Login([FromBody] UsuarioRequest.Login login)
+        public ActionResult<UsuarioResponse> Login([FromBody] UsuarioRequest.UsuarioLogin login)
         {
 
             if (!ModelState.IsValid)
@@ -140,14 +170,62 @@ namespace av_challenge_api.Usuario.Controllers
 
         // PUT api/<UsuarioController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult<UsuarioResponse> Put(int id, [FromBody] UsuarioRequest.UsuarioUpdate updateUsuario)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
+            IResponse<UsuarioEntity> respuesta = new UsuarioResponse();
+
+            try
+            {
+
+                UsuarioEntity usuario = _usuarioService.Update(id, updateUsuario);
+
+                respuesta.Resultado = "S";
+                respuesta.Datos.Add(usuario);
+
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Resultado = "E";
+                respuesta.Mensaje = ex.Message.ToString();
+
+            }
+
+            return Ok(respuesta);
+
         }
 
         // DELETE api/<UsuarioController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult<UsuarioResponse> Delete(int id)
         {
+
+            IResponse<UsuarioEntity> respuesta = new UsuarioResponse();
+
+            try
+            {
+
+                bool resDelete = _usuarioService.Delete(id);
+                respuesta.Resultado = resDelete == true ? "S" : "N";
+
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Resultado = "E";
+                respuesta.Mensaje = ex.Message.ToString();
+
+            }
+
+            return Ok(respuesta);
+
         }
     }
 }
