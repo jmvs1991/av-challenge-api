@@ -3,9 +3,13 @@ using Connection;
 using Connection.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text;
 
 namespace av_challenge_api.Usuario.Services
 {
@@ -13,12 +17,14 @@ namespace av_challenge_api.Usuario.Services
     {
 
         private readonly DbSet<UsuarioEntity> _usuarioRepo;
+        private readonly IConfiguration _config;
         private DbContext _context;
 
-        public UsuarioService(ApiContext context)
+        public UsuarioService(ApiContext context, IConfiguration config)
         {
             _usuarioRepo = context.usuarioRepository;
             _context = context;
+            _config = config;
         }
 
         public List<UsuarioEntity> Find()
@@ -33,7 +39,16 @@ namespace av_challenge_api.Usuario.Services
 
         public UsuarioEntity Login(string usuario, string clave)
         {
-            return _usuarioRepo.First(us => us.Usuario == usuario && us.Clave == clave);
+            UsuarioEntity usuarioEntity = _usuarioRepo.FirstOrDefault(us => us.Usuario == usuario && us.Clave == clave);
+
+            if (usuarioEntity == null)
+            {
+                throw new Exception("Usuario o clave incorrecto.");
+            }
+
+            usuarioEntity.Token = GenerateJSONWebToken();
+
+            return usuarioEntity;
         }
 
         public UsuarioEntity Create(UsuarioRequest.UsuarioCreate usuario)
@@ -86,6 +101,21 @@ namespace av_challenge_api.Usuario.Services
             _context.SaveChanges();
             return true;
 
+        }
+
+        private string GenerateJSONWebToken()
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+              _config["Jwt:Issuer"],
+              _config["Jwt:Issuer"],
+              null,
+              expires: DateTime.Now.AddMinutes(120),
+              signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }

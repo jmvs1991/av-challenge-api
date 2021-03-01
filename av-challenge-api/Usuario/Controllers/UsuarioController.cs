@@ -2,9 +2,12 @@
 using av_challenge_api.Usuario.Services;
 using Connection;
 using Connection.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,10 +20,10 @@ namespace av_challenge_api.Usuario.Controllers
 
         private readonly UsuarioService _usuarioService;
 
-        public UsuarioController(ApiContext context)
+        public UsuarioController(ApiContext context, IConfiguration config)
         {
 
-            _usuarioService = new UsuarioService(context);
+            _usuarioService = new UsuarioService(context, config);
 
         }
 
@@ -92,6 +95,7 @@ namespace av_challenge_api.Usuario.Controllers
 
         // POST api/<UsuarioController>
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult<UsuarioResponse> Post([FromBody] UsuarioRequest.UsuarioCreate createUsuario)
         {
 
@@ -139,21 +143,8 @@ namespace av_challenge_api.Usuario.Controllers
             {
 
                 UsuarioEntity usuario = _usuarioService.Login(login.Usuario, login.Clave);
-
-                if (usuario != null)
-                {
-
-                    respuesta.Resultado = "S";
-                    respuesta.Datos.Add(usuario);
-
-                }
-                else
-                {
-
-                    respuesta.Resultado = "N";
-                    respuesta.Mensaje = "Usuario o clave incorrecto";
-
-                }
+                respuesta.Resultado = "S";
+                respuesta.Datos.Add(usuario);
 
             }
             catch (Exception ex)
@@ -170,6 +161,7 @@ namespace av_challenge_api.Usuario.Controllers
 
         // PUT api/<UsuarioController>/5
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult<UsuarioResponse> Put(int id, [FromBody] UsuarioRequest.UsuarioUpdate updateUsuario)
         {
 
@@ -204,6 +196,7 @@ namespace av_challenge_api.Usuario.Controllers
 
         // DELETE api/<UsuarioController>/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public ActionResult<UsuarioResponse> Delete(int id)
         {
 

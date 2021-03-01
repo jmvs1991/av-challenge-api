@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Connection.Entities
@@ -16,6 +17,7 @@ namespace Connection.Entities
         [Column("USUARIO")]
         public string Usuario { get; set; }
 
+        [JsonIgnore]
         [Required]
         [Column("CLAVE")]
         public string Clave { get; set; }
@@ -26,6 +28,9 @@ namespace Connection.Entities
 
         [Column("CORREO")]
         public string Correo { get; set; }
+
+        [NotMapped]
+        public string Token { get; set; }
 
     }
 }

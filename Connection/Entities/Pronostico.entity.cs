@@ -21,7 +21,6 @@ namespace Connection.Entities
         [Column("ID_CIUDAD")]
         public int IdCiudad { get; set; }
 
-        [NotMapped]
         [ForeignKey("IdCiudad")]
         public CiudadEntity Ciudad { get; set; }
 

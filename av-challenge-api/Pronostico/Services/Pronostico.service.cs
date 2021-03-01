@@ -27,7 +27,9 @@ namespace av_challenge_api.Pronostico.Services
 
         public PronosticoEntity FindById(int id)
         {
-            return _pronosticoRepo.Find(id);
+            return _pronosticoRepo.Include(pronos => pronos.Ciudad)
+                                  .ThenInclude(ciudad => ciudad.Pais)
+                                  .First(pronos => pronos.IdPronostico == id);
         }
 
         public List<PronosticoEntity> FindByIdCiudadAndFecha(int id, long FechaI, long FechaF)

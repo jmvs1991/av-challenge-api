@@ -18,13 +18,14 @@ namespace Connection.Entities
         [Column("ID_PAIS")]
         public int IdPais { get; set; }
 
-        [NotMapped]
         [ForeignKey("IdPais")]
         public PaisEntity Pais { get; set; }
 
         [Required]
         [Column("NOMBRE")]
         public string Nombre { get; set; }
+
+        public List<PronosticoEntity> Pronosticos { get; set; }
               
 
     }

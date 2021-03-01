@@ -28,7 +28,8 @@ namespace av_challenge_api.Pais.Services
 
         public PaisEntity FindById(int id)
         {
-            return _paisRepo.Find(id);
+            return _paisRepo.Include(pais => pais.Ciudades)
+                            .First(pais => pais.IdPais == id);
         }
 
         public PaisEntity Create(PaisRequest.PaisCreate pais)

@@ -1,18 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using av_challenge_api.Ciudad.Service;
+﻿using av_challenge_api.Ciudad.Service;
+using av_challenge_api.Models;
 using Connection;
 using Connection.Entities;
-using av_challenge_api.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace av_challenge_api.Ciudad.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     public class CiudadController : ControllerBase
     {
@@ -118,20 +118,97 @@ namespace av_challenge_api.Ciudad.Controllers
 
         // POST api/<CiudadController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<CiudadResponse> Post([FromBody] CiudadRequest.CiudadCreate createCiudad)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            IResponse<CiudadEntity> respuesta = new CiudadResponse();
+
+            try
+            {
+
+                CiudadEntity ciudad = _ciudadService.Create(createCiudad);
+                respuesta.Resultado = "S";
+                respuesta.Datos.Add(ciudad);
+
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Resultado = "E";
+                respuesta.Mensaje = ex.Message.ToString();
+
+            }
+
+            return Ok(respuesta);
+
         }
 
         // PUT api/<CiudadController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult<CiudadResponse> Put(int id, [FromBody] CiudadRequest.CiudadUpdate updateCiudad)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            IResponse<CiudadEntity> respuesta = new CiudadResponse();
+
+            try
+            {
+
+                CiudadEntity ciudad = _ciudadService.Update(id, updateCiudad);
+                respuesta.Resultado = "S";
+                respuesta.Datos.Add(ciudad);
+
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Resultado = "E";
+                respuesta.Mensaje = ex.Message.ToString();
+
+            }
+
+            return Ok(respuesta);
+
         }
 
         // DELETE api/<CiudadController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult<CiudadResponse> Delete(int id)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            IResponse<CiudadEntity> respuesta = new CiudadResponse();
+
+            try
+            {
+
+                bool resDelete = _ciudadService.Delete(id);
+                respuesta.Resultado = resDelete == true ? "S" : "N";
+
+            }
+            catch (Exception ex)
+            {
+
+                respuesta.Resultado = "E";
+                respuesta.Mensaje = ex.Message.ToString();
+
+            }
+
+            return Ok(respuesta);
+
         }
     }
 }

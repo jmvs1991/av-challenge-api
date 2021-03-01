@@ -14,11 +14,13 @@ namespace av_challenge_api.Ciudad.Service
     {
 
         private readonly DbSet<CiudadEntity> _ciudadRepo;
+        private readonly DbSet<PaisEntity> _paisRepo;
         private DbContext _context;
 
         public CiudadService(ApiContext context)
         {
             _ciudadRepo = context.ciudadRepository;
+            _paisRepo = context.paisRepository;
             _context = context;
         }
 
@@ -29,7 +31,9 @@ namespace av_challenge_api.Ciudad.Service
 
         public CiudadEntity FindById(int id)
         {
-            return _ciudadRepo.Find(id);
+            return _ciudadRepo.Include(ciudad => ciudad.Pais)
+                              .Include(Ciudad => Ciudad.Pronosticos)
+                              .First(Ciudad => Ciudad.IdCiudad == id);
         }
 
         public List<CiudadEntity> FindByIdPais(int id)
@@ -39,6 +43,13 @@ namespace av_challenge_api.Ciudad.Service
 
         public CiudadEntity Create(CiudadRequest.CiudadCreate ciudad)
         {
+
+            PaisEntity pais = _paisRepo.Find(ciudad.IdPais);
+
+            if(pais == null)
+            {
+                throw new Exception("País no encontrado");
+            }
 
             CiudadEntity ciudadEntity = new CiudadEntity();
             ciudadEntity.IdPais = ciudad.IdPais;

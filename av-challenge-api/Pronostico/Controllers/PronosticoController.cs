@@ -7,12 +7,14 @@ using av_challenge_api.Pronostico.Services;
 using av_challenge_api.Models;
 using Connection;
 using Connection.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace av_challenge_api.Pronostico.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     public class PronosticoController : ControllerBase
     {

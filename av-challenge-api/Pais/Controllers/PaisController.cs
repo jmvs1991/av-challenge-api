@@ -2,6 +2,7 @@
 using av_challenge_api.Pais.Services;
 using Connection;
 using Connection.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 namespace av_challenge_api.Pais.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     public class PaisController : ControllerBase
     {

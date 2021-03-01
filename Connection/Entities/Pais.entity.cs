@@ -23,7 +23,6 @@ namespace Connection.Entities
         [Column("CODIGO_ISO")]
         public string CodigoIso { get; set; }
 
-        [NotMapped]
         public List<CiudadEntity> Ciudades { get; set; }
                 
     }
