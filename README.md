@@ -50,6 +50,10 @@ Nota: es importante que el usuario utilizado en la conexión tenga permisos para
 
         En el correo se adjuntara un .sql con los script para crear la base de datos.
 
+### Restaurar paquetes Nutget
+
+    Es recomendable hacer una restauración de los paquetes nutget del proyecto. Así como tener instalado la ultima versión de netcore.
+
 ### Ejecutar el proyecto
 
     Una vez ejecutado los pasos anteriores se puede ejecutar el proyecto api, el mismo mostrara un swagger.
