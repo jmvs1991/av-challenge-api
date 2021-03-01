@@ -6,25 +6,26 @@ using System.Text;
 
 namespace Connection.Entities
 {
-    [Table("PAIS")]
-    public class PaisEntity
+    [Table("CIUDAD")]
+    public class CiudadEntity
     {
 
         [Key]
-        [Column("ID_PAIS")]
+        [Column("ID_CIUDAD")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int IdCiudad { get; set; }
+
+        [Column("ID_PAIS")]
         public int IdPais { get; set; }
+
+        [NotMapped]
+        [ForeignKey("IdPais")]
+        public PaisEntity Pais { get; set; }
 
         [Required]
         [Column("NOMBRE")]
         public string Nombre { get; set; }
+              
 
-        [Required]
-        [Column("CODIGO_ISO")]
-        public string CodigoIso { get; set; }
-
-        [NotMapped]
-        public List<CiudadEntity> Ciudades { get; set; }
-                
     }
 }
