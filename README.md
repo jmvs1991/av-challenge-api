@@ -28,4 +28,28 @@ Nota: Cualquier cambio en los datos de conexión hay que actualizar los datos de
 
 ### Creación de la base de datos y actualización de datos.
 
-    - Migraciones (Recomendado)
+    - Generar base de datos y datos usando migraciones de EF(Recomendado)
+
+        - Requerimientos previos:
+
+            1. Manejador de base de datos corriendo.
+            2. Tener instalado Net core cli(https://docs.microsoft.com/en-us/ef/core/cli/dotnet)
+            3. Tener el appsettings.json con los datos reales de conexión.
+        
+        1. Ubicarse dentro de la carpeta 'av-challenge-api\av-challenge-api' 
+
+        2. Ejecutar el comando 'dotnet ef database update'
+
+Nota: es importante que el usuario utilizado en la conexión tenga permisos para crear y editar base de datos.
+
+    - Generar base de datos mediante archivo .bacpac
+
+        En el correo se adjuntara un archivo .bacpac para generar la base de datos desde un respaldo.
+
+    - Generar base de datos mediante script
+
+        En el correo se adjuntara un .sql con los script para crear la base de datos.
+
+### Ejecutar el proyecto
+
+    Una vez ejecutado los pasos anteriores se puede ejecutar el proyecto api, el mismo mostrara un swagger.
